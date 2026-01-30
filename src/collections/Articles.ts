@@ -15,7 +15,7 @@ export const Articles: CollectionConfig = {
     { name: 'slug', type: 'text', required: true, unique: true },
     { name: 'lang', type: 'text', defaultValue: 'en' },
     { name: 'excerpt', type: 'textarea', label: 'Short Excerpt' },
-    { name: 'content', type: 'textarea', required: true, label: 'Full Content (HTML/Text)' },
+    { name: 'content', type: 'textarea', required: true, label: 'Full Content (HTML/Text)', maxLength: 1000000 },
     { name: 'date', type: 'date', required: true },
     { name: 'modified', type: 'date', label: 'Last Modified' },
     { name: 'link', type: 'text', label: 'Original Link' },
