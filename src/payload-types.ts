@@ -73,6 +73,7 @@ export interface Config {
     categories: Category;
     tags: Tag;
     articles: Article;
+    comments: Comment;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    comments: CommentsSelect<false> | CommentsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -218,11 +220,32 @@ export interface Article {
   date: string;
   modified?: string | null;
   link?: string | null;
+  featuredImage?: {
+    url?: string | null;
+    width?: number | null;
+    height?: number | null;
+    alt?: string | null;
+    id?: string | null;
+  };
   author?: (string | null) | Author;
   categories?: (string | Category)[] | null;
   tags?: (string | Tag)[] | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments".
+ */
+export interface Comment {
+  id: string;
+  author: string;
+  email?: string | null;
+  content: string;
+  article: string | Article;
+  approved?: boolean | null;
+  createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -271,6 +294,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'articles';
         value: string | Article;
+      } | null)
+    | ({
+        relationTo: 'comments';
+        value: string | Comment;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -401,11 +428,33 @@ export interface ArticlesSelect<T extends boolean = true> {
   date?: T;
   modified?: T;
   link?: T;
+  featuredImage?:
+    | T
+    | {
+        url?: T;
+        width?: T;
+        height?: T;
+        alt?: T;
+        id?: T;
+      };
   author?: T;
   categories?: T;
   tags?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments_select".
+ */
+export interface CommentsSelect<T extends boolean = true> {
+  author?: T;
+  email?: T;
+  content?: T;
+  article?: T;
+  approved?: T;
+  createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
