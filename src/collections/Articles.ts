@@ -21,7 +21,7 @@ export const Articles: CollectionConfig = {
     { name: 'link', type: 'text', label: 'Original Link' },
     { 
       name: 'featuredImage', 
-      type: 'object', 
+      type: 'group', 
       label: 'Featured Image',
       fields: [
         { name: 'url', type: 'text', label: 'Image URL' },
