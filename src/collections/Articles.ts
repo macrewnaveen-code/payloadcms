@@ -10,6 +10,46 @@ export const Articles: CollectionConfig = {
     update: ({ req }) => !!req.user,
     delete: ({ req }) => !!req.user,
   },
+  hooks: {
+    afterChange: [
+      async ({ doc, operation }) => {
+        console.log('🔄 Article webhook hook triggered:', { operation, docId: doc?.id, slug: doc?.slug });
+        console.log('🔄 Environment check:', {
+          ASTRO_WEBHOOK_URL: process.env.ASTRO_WEBHOOK_URL,
+          PAYLOAD_WEBHOOK_SECRET: process.env.PAYLOAD_WEBHOOK_SECRET ? 'SET' : 'NOT SET'
+        });
+
+        try {
+          const webhookUrl = process.env.ASTRO_WEBHOOK_URL || 'http://localhost:4321/api/payload-webhook';
+          const webhookSecret = process.env.PAYLOAD_WEBHOOK_SECRET;
+
+          console.log('🔄 Sending webhook to:', webhookUrl);
+
+          const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(webhookSecret && { 'x-payload-webhook-secret': webhookSecret }),
+            },
+            body: JSON.stringify({
+              type: operation,
+              collection: 'articles',
+              doc,
+              timestamp: new Date().toISOString(),
+            }),
+          });
+
+          if (response.ok) {
+            console.log(`✅ Webhook sent for articles ${operation}: ${doc.slug || doc.id}`);
+          } else {
+            console.error(`❌ Webhook failed: ${response.status} ${response.statusText}`);
+          }
+        } catch (error) {
+          console.error('❌ Webhook error:', error);
+        }
+      },
+    ],
+  },
   fields: [
     { name: 'title', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true },

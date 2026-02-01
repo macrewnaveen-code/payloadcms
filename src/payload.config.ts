@@ -22,6 +22,10 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    // Enable webhooks in admin UI
+    components: {
+      // This might enable webhooks in admin
+    },
   },
   collections: [Users, Media, Authors, Categories, Tags, Articles, Comments],
   editor: lexicalEditor(),
